@@ -9,27 +9,63 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+
+ //recursive 
 class Solution {
     public:
         int maxDepth(TreeNode* root) {
-            if(!root) return 0; 
+            if(root == NULL) return 0; 
+    
+            return 1 + max(maxDepth(root->left), maxDepth(root->right));      
+        }
+};
+
+//dfs interative 
+class Solution {
+    public:
+        int maxDepth(TreeNode* root) {
+    
+            if(root == NULL) return 0; 
+            int max_depth = 0; 
+            stack<pair<TreeNode*,int>> nodes;
+    
+            nodes.push({root, 1}); 
+    
+            while(!nodes.empty()){ 
+                TreeNode* node = nodes.top().first; 
+                int depth = nodes.top().second;
+                nodes.pop(); 
+    
+                if(node) {
+                    max_depth = max(max_depth, depth); 
+                    nodes.push({node->left, depth + 1}); 
+                    nodes.push({node->right, depth + 1}); 
+                }
+            }
+            return max_depth;            
+        }
+};
+
+//bfs interative 
+class Solution {
+    public:
+        int maxDepth(TreeNode* root) {
+            if(root == NULL) return 0; 
     
             int level = 0; 
     
-            deque<TreeNode*> q; 
-            q.push_front(root);
-    
-            while(!q.empty()) {
-                int size = q.size();
+            deque<TreeNode*> dq; 
+            dq.push_front(root);
+            while(!dq.empty()) {
+                int size = dq.size();
                 for(int i = 0; i < size; i++) {
-    
-                    TreeNode* node = q.back();
-                    q.pop_back();
-                    if(node->left) q.push_front(node->left);
-                    if (node->right) q.push_front(node->right);
+                    TreeNode* temp = dq.back();
+                    dq.pop_back();
+                    if(temp->left) dq.push_front(temp->left);
+                    if(temp->right) dq.push_front(temp->right);
                 }
                 level++;
             }
-            return level;
+            return level; 
         }
 };

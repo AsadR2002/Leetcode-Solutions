@@ -1,28 +1,27 @@
 class Solution {
     public:
         bool isValid(string s) {
-            vector<char> opening = {'[', '(', '{'};
-            vector<char> closing = {']', ')', '}'};
+            stack<char> bracket;
+            unordered_map<char, char> pairs; 
     
-            stack<char> callStack; 
+            pairs['('] = ')';
+            pairs['{'] = '}';
+            pairs['['] = ']'; 
     
-            for(char c : s) { 
-                if(find(opening.begin(), opening.end(), c) != opening.end()) {
-                    callStack.push(c);
+            
+            for(int i = 0; i < s.length(); i++) {
+                if(pairs.find(s[i]) != pairs.end()) {
+                    bracket.push(s[i]); 
                 }
                 else {
-                    if(callStack.empty()) return false;
-                    char bracket = callStack.top(); 
-                    callStack.pop();
-                    if((find(opening.begin(), opening.end(), bracket) - opening.begin()) != (find(closing.begin(), closing.end(),c) - closing.begin())) {
-                        return false;
-                    }
+                    if(bracket.empty()) return false;
+                    char opening = bracket.top(); 
+                    if(pairs[opening] != s[i]) return false;
+                    bracket.pop();
                 }
             }
     
-            if (!callStack.empty()) return false;
+            return bracket.empty();
     
-            return true;
-            
         }
-    };
+};
